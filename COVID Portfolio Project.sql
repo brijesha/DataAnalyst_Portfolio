@@ -130,4 +130,42 @@ WHERE
   select location, date, rolling_people_vaccinated
   from population_vaccinated_perc
   
+  -- tableau quaries
+  -- 1.
+  select sum(new_cases) as total_cases, 
+  	sum(new_deaths) as total_deaths,
+  	(sum(new_deaths)/sum(new_cases))*100 as death_perc
+  from covid_deaths
+  where continent !=''
+  order by 1,2
   
+-- 2. 
+-- European Union is part of Europe
+
+Select location, SUM(new_deaths) as Total_Death_Count
+From covid_deaths
+Where continent=''
+and location not in ('World', 'European Union', 'International', 'High income','Upper middle income','Lower middle income','Low income')
+Group by location
+order by Total_Death_Count desc
+
+
+-- 3.
+
+Select Location, Population, MAX(total_cases) as Highest_Infection_Count,  Max((total_cases/population))*100 as Population_Infected_Perc
+From covid_deaths
+Group by Location, Population
+order by Population_Infected_Perc desc
+
+
+-- 4.
+
+Select Location, Population,date, MAX(total_cases) as Highest_Infection_Count,  Max((total_cases/population))*100 as Population_Infected_Perc
+From covid_deaths
+where total_cases is not null
+Group by Location, Population, date
+order by Population_Infected_Perc desc
+
+Select count(*)
+From covid_deaths
+where total_cases is not null
